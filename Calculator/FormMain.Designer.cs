@@ -36,9 +36,9 @@
             // 
             this.lblResult.Dock = System.Windows.Forms.DockStyle.Top;
             this.lblResult.Font = new System.Drawing.Font("Segoe UI", 36F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblResult.Location = new System.Drawing.Point(0, 63);
+            this.lblResult.Location = new System.Drawing.Point(0, 44);
             this.lblResult.Name = "lblResult";
-            this.lblResult.Size = new System.Drawing.Size(434, 70);
+            this.lblResult.Size = new System.Drawing.Size(434, 76);
             this.lblResult.TabIndex = 0;
             this.lblResult.Text = "0";
             this.lblResult.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -48,7 +48,7 @@
             this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(434, 63);
+            this.panel1.Size = new System.Drawing.Size(434, 44);
             this.panel1.TabIndex = 1;
             // 
             // FormMain

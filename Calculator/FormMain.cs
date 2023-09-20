@@ -13,27 +13,37 @@ namespace Calculator
     public partial class FormMain : Form
     {
 
+        public enum SymbolType
+        {
+            Number,
+            Operator,
+            DecimalPoint,
+            PlusMinusSign,
+            BackSpace,
+            Undefined
+        }
+
         public struct BtnStruct
         {
             public char Content;
+            public SymbolType Type;
             public bool IsBold;
-            public bool IsNumber;
-            public BtnStruct(char c, bool b = false, bool n = false)
+            public BtnStruct(char c, SymbolType t = SymbolType.Undefined, bool b = false)
             {
-                this.Content = c;
+                this.Content = c;              
+                this.Type = t;
                 this.IsBold = b;
-                this.IsNumber = n;
             }
         }
 
         private BtnStruct[,] buttons =
         {
-            { new BtnStruct('%', false), new BtnStruct('\u0152', false), new BtnStruct('C', false), new BtnStruct('\u232B', false) }, 
-            { new BtnStruct('\u215F', false), new BtnStruct('\u00B2', false), new BtnStruct('\u221A', false), new BtnStruct('\u00F7', false) }, 
-            { new BtnStruct('7', true, true), new BtnStruct('8', true, true), new BtnStruct('9', true, true), new BtnStruct('\u00D7', false) }, 
-            { new BtnStruct('4', true, true), new BtnStruct('5', true, true), new BtnStruct('6', true, true), new BtnStruct('-', false) }, 
-            { new BtnStruct('1', true, true), new BtnStruct('2', true, true), new BtnStruct('3', true, true), new BtnStruct('+', false) }, 
-            { new BtnStruct('\u00B1', true), new BtnStruct('0', true, true), new BtnStruct(',', true), new BtnStruct('=', false) },
+            { new BtnStruct('%'), new BtnStruct('\u0152'), new BtnStruct('C'), new BtnStruct('\u232B', SymbolType.BackSpace) }, 
+            { new BtnStruct('\u215F'), new BtnStruct('\u00B2'), new BtnStruct('\u221A'), new BtnStruct('\u00F7') }, 
+            { new BtnStruct('7', SymbolType.Number, true), new BtnStruct('8', SymbolType.Number, true), new BtnStruct('9', SymbolType.Number, true), new BtnStruct('\u00D7', SymbolType.Operator) }, 
+            { new BtnStruct('4', SymbolType.Number, true), new BtnStruct('5', SymbolType.Number, true), new BtnStruct('6', SymbolType.Number, true), new BtnStruct('-', SymbolType.Operator) }, 
+            { new BtnStruct('1', SymbolType.Number, true), new BtnStruct('2', SymbolType.Number, true), new BtnStruct('3', SymbolType.Number, true), new BtnStruct('+', SymbolType.Operator) }, 
+            { new BtnStruct('\u00B1', SymbolType.PlusMinusSign), new BtnStruct('0', SymbolType.Number, true), new BtnStruct(',', SymbolType.DecimalPoint), new BtnStruct('=', SymbolType.Operator) },
         };
 
         public FormMain()
@@ -80,11 +90,52 @@ namespace Calculator
         {
             Button clickedButton = (Button)sender;
             BtnStruct clickedButtonStruct = (BtnStruct)clickedButton.Tag;
-            if(clickedButtonStruct.IsNumber)
+
+            switch(clickedButtonStruct.Type)
             {
-                lblResult.Text += clickedButton.Text;
+                case SymbolType.Number:
+                    if (lblResult.Text == "0") lblResult.Text = "";
+                    lblResult.Text += clickedButton.Text;
+                    break;
+
+                case SymbolType.Operator:
+                    break;
+
+                case SymbolType.DecimalPoint:
+                    if (lblResult.Text.IndexOf(",") == -1)
+                        lblResult.Text += clickedButton.Text;
+                    break;
+
+                case SymbolType.PlusMinusSign:
+                    if(lblResult.Text != "0")
+                    {
+                        if((lblResult.Text.IndexOf("-") == -1))
+                        {
+                            lblResult.Text = "-" + lblResult.Text;
+                        }
+                        else
+                        {
+                            lblResult.Text = lblResult.Text.Substring(1);
+                        }
+                    }
+                    break;
+
+                case SymbolType.BackSpace:
+                    lblResult.Text = lblResult.Text.Substring(0, lblResult.Text.Length - 1);
+                    if(lblResult.Text.Length == 0 || lblResult.Text == "-0")
+                    {
+                        lblResult.Text = "0";
+                    }
+                    break;
+
+                case SymbolType.Undefined:
+                    break;
+
+                default:
+                    break;
+
             }
-            lblResult.Text += clickedButton.Text;
+
         }
     }
 }

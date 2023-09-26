@@ -20,6 +20,8 @@ namespace Calculator
             DecimalPoint,
             PlusMinusSign,
             BackSpace,
+            ClearAll,
+            ClearEntry,
             Undefined
         }
 
@@ -38,7 +40,7 @@ namespace Calculator
 
         private BtnStruct[,] buttons =
         {
-            { new BtnStruct('%'), new BtnStruct('\u0152'), new BtnStruct('C'), new BtnStruct('\u232B', SymbolType.BackSpace) }, 
+            { new BtnStruct('%'), new BtnStruct('\u0152', SymbolType.ClearEntry), new BtnStruct('C', SymbolType.ClearAll), new BtnStruct('\u232B', SymbolType.BackSpace) }, 
             { new BtnStruct('\u215F'), new BtnStruct('\u00B2'), new BtnStruct('\u221A'), new BtnStruct('\u00F7') }, 
             { new BtnStruct('7', SymbolType.Number, true), new BtnStruct('8', SymbolType.Number, true), new BtnStruct('9', SymbolType.Number, true), new BtnStruct('\u00D7', SymbolType.Operator) }, 
             { new BtnStruct('4', SymbolType.Number, true), new BtnStruct('5', SymbolType.Number, true), new BtnStruct('6', SymbolType.Number, true), new BtnStruct('-', SymbolType.Operator) }, 
@@ -128,6 +130,12 @@ namespace Calculator
                     }
                     break;
 
+                case SymbolType.ClearAll:
+                    break;
+
+                case SymbolType.ClearEntry:
+                    break;
+
                 case SymbolType.Undefined:
                     break;
 
@@ -136,6 +144,23 @@ namespace Calculator
 
             }
 
+
+            
+        }
+
+        private void lblResult_TextChanged(object sender, EventArgs e)
+        {
+            if(lblResult.Text.Length > 16)
+            lblResult.Text = lblResult.Text.Substring(0, 16);
+            if (lblResult.Text.Length > 11)
+            {
+                int delta = lblResult.Text.Length - 11;
+                lblResult.Font = new Font("Segoe UI", 36 - delta * (float)2.8, FontStyle.Regular);
+            }
+            else
+            {
+                lblResult.Font = new Font("Segoe UI", 36 - lblResult.Text.Length, FontStyle.Regular);
+            }
         }
     }
 }

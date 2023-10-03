@@ -112,7 +112,14 @@ namespace Calculator
                     break;
 
                 case SymbolType.Operator:
-                    ManageOperator(clickedButtonStruct);
+                    if(lastButtonClicked.Type == SymbolType.Operator && clickedButtonStruct.Content != '=')
+                    {
+                        lastOperator = clickedButtonStruct.Content;
+                    }
+                    else
+                    {
+                        ManageOperator(clickedButtonStruct);
+                    }                   
                     break;
 
                 case SymbolType.DecimalPoint:
@@ -135,11 +142,15 @@ namespace Calculator
                     break;
 
                 case SymbolType.BackSpace:
-                    lblResult.Text = lblResult.Text.Substring(0, lblResult.Text.Length - 1);
-                    if(lblResult.Text.Length == 0 || lblResult.Text == "-0")
+                    if(lastButtonClicked.Type!= SymbolType.Operator)
                     {
-                        lblResult.Text = "0";
+                        lblResult.Text = lblResult.Text.Substring(0, lblResult.Text.Length - 1);
+                        if (lblResult.Text.Length == 0 || lblResult.Text == "-0")
+                        {
+                            lblResult.Text = "0";
+                        }
                     }
+                    
                     break;
 
                 case SymbolType.ClearAll:
@@ -156,7 +167,8 @@ namespace Calculator
                     break;
 
             }
-            lastButtonClicked = clickedButtonStruct;
+            if(clickedButtonStruct.Type != SymbolType.BackSpace)
+                lastButtonClicked = clickedButtonStruct;
         }
 
         private void ManageOperator(BtnStruct clickedButtonStruct)
@@ -164,11 +176,11 @@ namespace Calculator
             if (lastOperator == ' ')
             {
                 operand1 = decimal.Parse(lblResult.Text);
-                lastOperator = clickedButtonStruct.Content;
+                if (clickedButtonStruct.Content != '=') lastOperator = clickedButtonStruct.Content;
             }
             else
             {
-                operand2 = decimal.Parse(lblResult.Text);
+                if (clickedButtonStruct.Content != '=') operand2 = decimal.Parse(lblResult.Text);
                 switch (lastOperator)
                 {
                     case '+':
@@ -187,7 +199,12 @@ namespace Calculator
                         break;
                 }
                 operand1 = result;
-                lastOperator = clickedButtonStruct.Content;
+                if (clickedButtonStruct.Content != '=')
+                {
+                    lastOperator = clickedButtonStruct.Content;
+                    if (lastButtonClicked.Content == '=') operand2 = 0;
+                }
+                
                 lblResult.Text = result.ToString();
             }
         }

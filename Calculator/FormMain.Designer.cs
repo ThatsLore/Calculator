@@ -30,6 +30,8 @@
         {
             this.lblResult = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.historyListBox = new System.Windows.Forms.ListBox();
+            this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // lblResult
@@ -46,11 +48,21 @@
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.historyListBox);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(434, 44);
             this.panel1.TabIndex = 1;
+            // 
+            // historyListBox
+            // 
+            this.historyListBox.FormattingEnabled = true;
+            this.historyListBox.ItemHeight = 16;
+            this.historyListBox.Location = new System.Drawing.Point(14, 13);
+            this.historyListBox.Name = "historyListBox";
+            this.historyListBox.Size = new System.Drawing.Size(417, 20);
+            this.historyListBox.TabIndex = 0;
             // 
             // FormMain
             // 
@@ -65,6 +77,7 @@
             this.ShowIcon = false;
             this.Text = "Form1";
             this.Load += new System.EventHandler(this.FormMain_Load);
+            this.panel1.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -73,6 +86,7 @@
 
         private System.Windows.Forms.Label lblResult;
         private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.ListBox historyListBox;
     }
 }
 

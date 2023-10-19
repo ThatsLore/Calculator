@@ -50,6 +50,10 @@ namespace Calculator
             { new BtnStruct('\u00B1',SymbolType.PlusMinusSign), new BtnStruct('0',SymbolType.Number,true), new BtnStruct(',',SymbolType.DecimalPoint), new BtnStruct('=',SymbolType.Operator) },
         };
 
+        private string currentInput = "";
+        private bool operationExecuted = false;
+        private string fullHistory = "";
+
         float lblResultBaseFontSize;
         int lblResultWidthMargin = 24;
         int lblResultMaxDigit = 25;
@@ -108,8 +112,12 @@ namespace Calculator
             switch (clickedButtonStruct.Type)
             {
                 case SymbolType.Number:
-                    if (lblResult.Text == "0" || lastButtonClicked.Type == SymbolType.Operator) lblResult.Text = "";
-                    lblResult.Text += clickedButton.Text;
+                    if (lblResult.Text == "0" || lastButtonClicked.Type == SymbolType.Operator)
+                    {
+                        currentInput = "";
+                    }
+                    currentInput += clickedButton.Text;
+                    lblResult.Text = currentInput;
                     break;
                 case SymbolType.SpecialOperator:
                     ManageSpecialOperator(clickedButtonStruct);
@@ -142,34 +150,41 @@ namespace Calculator
                 case SymbolType.Backspace:
                     if (lastButtonClicked.Type != SymbolType.Operator && lastButtonClicked.Type != SymbolType.SpecialOperator)
                     {
-                        lblResult.Text = lblResult.Text.Substring(0, lblResult.Text.Length - 1);
-                        if (lblResult.Text.Length == 0 || lblResult.Text == "-0")
-                            lblResult.Text = "0";
+                        currentInput = currentInput.Substring(0, currentInput.Length - 1);
+                        if (currentInput.Length == 0 || currentInput == "-0")
+                            currentInput = "0";
                     }
                     break;
                 case SymbolType.ClearAll:
                     ClearAll();
                     break;
                 case SymbolType.ClearEntry:
-                    if (lastButtonClicked.Content == '=') ClearAll();
-                    else lblResult.Text = "0";
+                    if (lastButtonClicked.Content == '=')
+                        ClearAll();
+                    else
+                        currentInput = "0";
                     break;
                 case SymbolType.Undefined:
                     break;
                 default:
                     break;
             }
+
             if (clickedButtonStruct.Type != SymbolType.Backspace && clickedButtonStruct.Type != SymbolType.PlusMinusSign)
                 lastButtonClicked = clickedButtonStruct;
         }
 
-            private void ClearAll()
+        private void ClearAll()
         {
             operand1 = 0;
             operand2 = 0;
             result = 0;
             lastOperator = ' ';
             lblResult.Text = "0";
+            currentInput = "";
+            operationExecuted = false;
+            fullHistory = "";
+            historyListBox.Items.Clear();
         }
 
         private void ManageSpecialOperator(BtnStruct clickedButtonStruct)
@@ -198,15 +213,9 @@ namespace Calculator
 
         private void ManageOperator(BtnStruct clickedButtonStruct)
         {
-
-            if (lastOperator == ' ')
+            if (lastOperator != ' ')
             {
-                operand1 = decimal.Parse(lblResult.Text);
-                if (clickedButtonStruct.Content != '=') lastOperator = clickedButtonStruct.Content;
-            }
-            else
-            {
-                if (lastButtonClicked.Content != '=') operand2 = decimal.Parse(lblResult.Text);
+                operand2 = decimal.Parse(lblResult.Text);
                 switch (lastOperator)
                 {
                     case '+':
@@ -224,14 +233,25 @@ namespace Calculator
                     default:
                         break;
                 }
+
+                string operation = $"{operand1} {lastOperator} {operand2} = {result}";
+                historyListBox.Items.Add(operation);
+                operationExecuted = true;
+
                 operand1 = result;
-                if (clickedButtonStruct.Content != '=')
-                {
-                    lastOperator = clickedButtonStruct.Content;
-                    if (lastButtonClicked.Content == '=') operand2 = 0;
-                }
-                lblResult.Text = result.ToString();
             }
+            else
+            {
+                historyListBox.Items.Add(currentInput);
+                operand1 = decimal.Parse(lblResult.Text);
+            }
+
+            if (clickedButtonStruct.Content != '=')
+            {
+                lastOperator = clickedButtonStruct.Content;
+            }
+            lblResult.Text = result.ToString();
+            currentInput = "";
         }
 
         private void lblResult_TextChanged(object sender, EventArgs e)
